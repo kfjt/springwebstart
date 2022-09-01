@@ -1,5 +1,6 @@
 package com.example.servingwebcontent;
 
+/** Greeting. */
 public class Greeting {
 
   private final long id;

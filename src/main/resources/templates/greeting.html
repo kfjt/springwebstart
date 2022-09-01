@@ -5,11 +5,22 @@
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:href="@{/css/main.css}" href="/static/css/main.css" type="text/css" rel="stylesheet" />
+    <script th:src="@{/js/sample.js}"></script>
 </head>
 
 <body>
-    <p th:text="'Hello, ' + ${name} + '!'" />
+    <p th:text="'Hello, ' + ${name} + '!'"></p>
     <img th:src="@{/image/sample.png}" alt="sample">
+    <div th:id="target" th:fragment="samplefrag">
+        <th:block th:each="data: ${sampleElementMap}" th:object="${data}">
+            <th:block th:if="*{!value.editable}">
+                <span th:id="*{key}" th:text="*{value.value}"></span>
+            </th:block>
+            <th:block th:if="*{value.editable}">
+                <input type="text" th:id="*{key}" th:value="*{value.value}" />
+            </th:block>
+        </th:block>
+    </div>
 </body>
 
 </html>
