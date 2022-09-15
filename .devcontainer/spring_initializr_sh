@@ -1,0 +1,13 @@
+curl -G https://start.spring.io/starter.tgz \
+    -d applicationName=DemoApplication \
+    -d artifactId=demo \
+    -d bootVersion=2.7.3 \
+    -d dependencies=web,thymeleaf,devtools,lombok \
+    -d groupId=com.example \
+    -d javaVersion=17 \
+    -d language=java \
+    -d name=demo \
+    -d packageName=com.example.demo \
+    -d packaging=jar \
+    -d type=gradle-project \
+    -d baseDir=. | tar -xzvf -
