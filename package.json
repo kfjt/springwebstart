@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@pdfme/ui": "^1.0.14"
+  }
+}

@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.3'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
+	id "com.github.node-gradle.node" version "3.4.0"
 }
 
 group = 'com.example'
@@ -29,4 +30,14 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+node {
+	version = '18.9.0'
+	download = true
+	yarnVersion = '1.22.19'
+}
+
+task addPdfme(type:YarnTask) {
+	args = ['add', '@pdfme/ui']
 }
