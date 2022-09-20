@@ -38,6 +38,28 @@ node {
 	yarnVersion = '1.22.19'
 }
 
-task addPdfme(type:YarnTask) {
-	args = ['add', '@pdfme/ui']
+task yarnRunWebpack(type:YarnTask) {args = ['run', 'webpack']}
+
+task yarnTest(type:YarnTask) {args = ['test']}
+
+task yarnAddProduction(type:YarnTask) {
+	args = [
+		'add',
+		'@pdfme/ui',
+	]
 }
+
+task yarnAddDevelop(type:YarnTask) {
+	args = [
+		'add',
+		'--dev',
+		'webpack',
+		'webpack-cli',
+		'jest',
+		'jest-environment-jsdom'
+	]
+}
+
+yarnAddDevelop.dependsOn yarnAddProduction
+yarnTest.dependsOn yarnAddDevelop
+processResources.dependsOn yarnRunWebpack
