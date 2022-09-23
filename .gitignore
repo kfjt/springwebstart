@@ -253,5 +253,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/git,java,gradle,visualstudiocode,node,yarn
 
 bin/
-/src/main/resources/static/js/**/*.js
-!/src/main/resources/static/js/**/.gitkeep
+src/main/resources/static/js/**/*.bundle.js
+uploads/*.pdf

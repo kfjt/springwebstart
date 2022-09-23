@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+  <title>ocr</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="module">
+    const pdfFile = document.getElementById('pdfFile');
+    pdfFile.addEventListener('change', e => {
+      const fileData = e.target.files[0];
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        const pdfThumbnail = document.getElementById('pdfThumbnail');
+        pdfThumbnail.setAttribute("data", reader.result);
+        // const cln = pdfThumbnail.cloneNode(true);
+        // cln.setAttribute("data", reader.result);
+        // pdfThumbnail.prepend(cln)
+      })
+      reader.readAsDataURL(fileData);
+    });
+
+  </script>
+</head>
+
+<body>
+  <form th:action="@{/pdf/ocr}" method="post" enctype="multipart/form-data">
+    <input type="file" accept=".pdf" name="pdfFile" id="pdfFile">
+    <button>upload</button>
+  </form>
+  <object id="pdfThumbnail" type="application/pdf">select a pdf document</object>
+</body>
+
+</html>
