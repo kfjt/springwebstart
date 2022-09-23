@@ -18,14 +18,15 @@ RUN curl -L -o google-java-format-all-deps.jar https://github.com/google/google-
     --no-fallback \
     -jar google-java-format-all-deps.jar google-java-format
 
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.245.0/containers/java/.devcontainer/base.Dockerfile
 
 FROM openjdk:17-slim-bullseye
-
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
 COPY --from=google-java-format /app/google-java-format /usr/local/bin/google-java-format
 RUN useradd -mU -s /usr/sbin/nologin appuser
 RUN apt update && apt -y install --no-install-recommends \
-    git
+    git \
+    python3-pip
+
+# RUN pip install git+https://github.com/kfjt/EasyOCR.git@json-output
+RUN git clone -b json-output https://github.com/kfjt/EasyOCR.git \
+    && pip install -e EasyOCR
