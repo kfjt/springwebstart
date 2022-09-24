@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Controller;
@@ -22,10 +23,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class PdfController {
   public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
-  private List<String> ls(String dir) throws IOException {
+  private List<String> ls(String dir, String ext) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
-      return stream.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
+      return stream
+          .filter(path -> path.toString().toLowerCase().endsWith(ext))
+          .map(Path::getFileName)
+          .map(Path::toString)
+          .collect(Collectors.toList());
     }
+  }
+
+  private List<String> lsPdf(String dir) throws IOException {
+    return ls(dir, ".pdf");
   }
 
   /**
@@ -49,13 +58,12 @@ public class PdfController {
   @PostMapping("ocr")
   public String postOcr(Model model, @RequestParam("pdfFile") MultipartFile file)
       throws IOException {
-    StringBuilder fileNames = new StringBuilder();
-    fileNames.append(file.getOriginalFilename());
-    Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
+    String id = UUID.randomUUID().toString();
+    Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, id + ".pdf");
     Files.write(fileNameAndPath, file.getBytes());
 
-    model.addAttribute("filelist", ls(UPLOAD_DIRECTORY));
-    return "pdf/files";
+    model.addAttribute("id", id);
+    return "pdf/saved";
   }
 
   /**
@@ -67,7 +75,7 @@ public class PdfController {
    */
   @GetMapping("files")
   public String getFiles(Model model) throws IOException {
-    model.addAttribute("filelist", ls(UPLOAD_DIRECTORY));
+    model.addAttribute("filelist", lsPdf(UPLOAD_DIRECTORY));
     return "pdf/files";
   }
 
