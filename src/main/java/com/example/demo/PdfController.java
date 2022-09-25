@@ -29,7 +29,7 @@ public class PdfController {
   private List<String> ls(String dir, String ext) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
       return stream
-          .filter(path -> path.toString().toLowerCase().endsWith(ext))
+          .filter(path -> path.endsWith(ext))
           .map(Path::getFileName)
           .map(Path::toString)
           .collect(Collectors.toList());
@@ -87,7 +87,7 @@ public class PdfController {
   }
 
   /**
-   * GET /pdf/ui.
+   * GET /pdf/ui/{id}.
    *
    * @return pdf/ui
    * @throws IOException readBase64

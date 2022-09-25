@@ -5,7 +5,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api")
 public class AiocrController {
+  public static final String CONVERT_DIRECTORY = System.getProperty("user.dir") + "/converts";
+
+  private List<String> ls(String dir, String id) throws IOException {
+    try (Stream<Path> stream = Files.list(Paths.get(dir))) {
+      return stream
+          .map(Path::getFileName)
+          .map(Path::toString)
+          .filter(filename -> filename.startsWith(id))
+          .collect(Collectors.toList());
+    }
+  }
+
   /**
    * ocr from imagePath.
    *
@@ -65,5 +84,25 @@ public class AiocrController {
     ArrayNode node = ocrFrom(imagePath);
     ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(node);
+  }
+
+  /**
+   * GET /api/pdf2img/{id}.
+   *
+   * @return path/to/img
+   * @throws IOException ProcessBuilder.start
+   * @throws InterruptedException ProcessBuilder.waitFor
+   */
+  @GetMapping("pdf2img/{id}")
+  public String pdf2img(@PathVariable("id") String id) throws IOException, InterruptedException {
+    String pdffile = Paths.get(PdfController.UPLOAD_DIRECTORY, id + ".pdf").toString();
+
+    ProcessBuilder pb =
+        new ProcessBuilder("pdftoppm", "-png", pdffile, CONVERT_DIRECTORY + "/" + id);
+    Process ps = pb.start();
+    ps.waitFor();
+    ps.destroy();
+
+    return ls(CONVERT_DIRECTORY, id).toString();
   }
 }

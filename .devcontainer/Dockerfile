@@ -29,7 +29,8 @@ COPY --chown=appuser:appuser craft_mlt_25k.pth $EASYOCR_MODULE_PATH/model/craft_
 
 RUN apt update && apt -y install --no-install-recommends \
     git \
-    python3-pip
+    python3-pip \
+    poppler-utils
 
 # RUN pip install git+https://github.com/kfjt/EasyOCR.git@json-output
 RUN git clone -b json-output https://github.com/kfjt/EasyOCR.git \
