@@ -6,10 +6,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /** AI OCR Contoroller. */
 @RestController
+@RequestMapping("api")
 public class AiocrController {
   /**
    * ocr from imagePath.
@@ -22,7 +24,7 @@ public class AiocrController {
   public static ArrayNode ocrFrom(String imagePath) throws IOException, InterruptedException {
     ObjectMapper mapper = new ObjectMapper();
     ArrayNode node = mapper.createArrayNode();
-    String cmd = "easyocr -l ja en --output_format json -f ";
+    String cmd = "easyocr -l ja en --output_format json --verbose '' -f ";
     ProcessBuilder pb = new ProcessBuilder((cmd + imagePath).split(" "));
     Process ps = pb.start();
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getInputStream()));
@@ -56,7 +58,7 @@ public class AiocrController {
    * @throws IOException when ProcessBuilder.start()
    * @throws InterruptedException when ProcessBuilder.waitFor()
    */
-  @GetMapping("/api/aiocr")
+  @GetMapping("aiocr")
   public String aiocr() throws IOException, InterruptedException {
     String imagePath = "/EasyOCR/examples/japanese.jpg";
     // return ocrTextFrom(imagePath);

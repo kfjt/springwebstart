@@ -20,9 +20,13 @@ RUN curl -L -o google-java-format-all-deps.jar https://github.com/google/google-
 
 
 FROM openjdk:17-slim-bullseye
+ENV EASYOCR_MODULE_PATH=/home/appuser/.EasyOCR
 
 COPY --from=google-java-format /app/google-java-format /usr/local/bin/google-java-format
 RUN useradd -mU -s /usr/sbin/nologin appuser
+COPY --chown=appuser:appuser japanese_g2.pth $EASYOCR_MODULE_PATH/model/japanese_g2.pth
+COPY --chown=appuser:appuser craft_mlt_25k.pth $EASYOCR_MODULE_PATH/model/craft_mlt_25k.pth
+
 RUN apt update && apt -y install --no-install-recommends \
     git \
     python3-pip
