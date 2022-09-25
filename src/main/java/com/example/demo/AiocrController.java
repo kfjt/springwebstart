@@ -71,15 +71,15 @@ public class AiocrController {
   }
 
   /**
-   * GET /api/aiocr.
+   * GET /api/aiocr/{id}.
    *
    * @return ocr string
    * @throws IOException when ProcessBuilder.start()
    * @throws InterruptedException when ProcessBuilder.waitFor()
    */
-  @GetMapping("aiocr")
-  public String aiocr() throws IOException, InterruptedException {
-    String imagePath = "/EasyOCR/examples/japanese.jpg";
+  @GetMapping("aiocr/{id}")
+  public String aiocr(@PathVariable("id") String id) throws IOException, InterruptedException {
+    String imagePath = Paths.get(CONVERT_DIRECTORY, id + "-1.png").toString();
     // return ocrTextFrom(imagePath);
     ArrayNode node = ocrFrom(imagePath);
     ObjectMapper mapper = new ObjectMapper();
