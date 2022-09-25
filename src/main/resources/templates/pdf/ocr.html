@@ -12,9 +12,6 @@
       reader.addEventListener('load', () => {
         const pdfThumbnail = document.getElementById('pdfThumbnail');
         pdfThumbnail.setAttribute("data", reader.result);
-        // const cln = pdfThumbnail.cloneNode(true);
-        // cln.setAttribute("data", reader.result);
-        // pdfThumbnail.prepend(cln)
       })
       reader.readAsDataURL(fileData);
     });

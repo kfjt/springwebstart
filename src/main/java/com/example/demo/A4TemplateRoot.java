@@ -6,6 +6,7 @@ import lombok.Data;
 /** A4 Template. */
 @Data
 public class A4TemplateRoot {
+  private String basePdf;
   private List<Schema> schemas;
 
   /** A4 Schema. */

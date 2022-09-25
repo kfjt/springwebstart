@@ -8,7 +8,8 @@
 
 <body>
   <ul>
-    <li th:each="filename : ${filelist}" th:text="${filename}">
+    <li th:each="id : ${filelist}">
+      <a th:href="@{/pdf/ui/{id}(id=${id})}" th:text="|${id}.pdf|">id</a>
     </li>
   </ul>
 </body>

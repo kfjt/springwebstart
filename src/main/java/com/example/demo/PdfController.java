@@ -5,13 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +78,11 @@ public class PdfController {
    */
   @GetMapping("files")
   public String getFiles(Model model) throws IOException {
-    model.addAttribute("filelist", lsPdf(UPLOAD_DIRECTORY));
+    List<String> filelist =
+        lsPdf(UPLOAD_DIRECTORY).stream()
+            .map(StringUtils::stripFilenameExtension)
+            .collect(Collectors.toList());
+    model.addAttribute("filelist", filelist);
     return "pdf/files";
   }
 
@@ -83,9 +90,10 @@ public class PdfController {
    * GET /pdf/ui.
    *
    * @return pdf/ui
+   * @throws IOException readBase64
    */
-  @GetMapping("ui")
-  public String getUi(Model model) {
+  @GetMapping("ui/{id}")
+  public String getUi(Model model, @PathVariable("id") String id) throws IOException {
     A4TemplateRoot.Position positionA = new A4TemplateRoot.Position();
     positionA.setX(0);
     positionA.setY(0);
@@ -116,6 +124,7 @@ public class PdfController {
     schema.setC(fieldC);
     A4TemplateRoot template = new A4TemplateRoot();
     template.setSchemas(Arrays.asList(schema));
+    template.setBasePdf(readPdfDataUri(id));
     model.addAttribute("template", template);
     A4TemplateInput input = new A4TemplateInput();
     input.setA("a1");
@@ -123,5 +132,18 @@ public class PdfController {
     input.setC("c1");
     model.addAttribute("inputs", Arrays.asList(input));
     return "pdf/ui";
+  }
+
+  /**
+   * readBase64.
+   *
+   * @param id id
+   * @return data uri
+   * @throws IOException Files.readAllBytes
+   */
+  private String readPdfDataUri(String id) throws IOException {
+    Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, id + ".pdf");
+    String base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(fileNameAndPath));
+    return "data:application/pdf;base64," + base64;
   }
 }

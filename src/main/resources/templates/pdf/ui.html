@@ -6,10 +6,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <script defer th:src="@{/js/index.bundle.js}"></script>
   <script type="module" th:inline="javascript">
-    const domContainer = document.getElementById('pdfContainer');
     const template = /*[[${template}]]*/{};
     const inputs = /*[[${inputs}]]*/[];
-    new Form({ template: { basePdf: BLANK_PDF, ...template }, inputs, domContainer });
+    const domContainer = document.getElementById('pdfContainer');
+    new Form({ template, inputs, domContainer });
   </script>
 </head>
 
