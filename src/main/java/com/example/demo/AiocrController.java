@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AiocrController {
   public static final String CONVERT_DIRECTORY = System.getProperty("user.dir") + "/converts";
 
-  private List<String> ls(String dir, String id) throws IOException {
+  private Set<String> ls(String dir, String id) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
       return stream
+          .filter(file -> !Files.isDirectory(file))
           .map(Path::getFileName)
           .map(Path::toString)
           .filter(filename -> filename.startsWith(id))
-          .collect(Collectors.toList());
+          .collect(Collectors.toSet());
     }
   }
 
@@ -43,7 +44,7 @@ public class AiocrController {
   public static ArrayNode ocrFrom(String imagePath) throws IOException, InterruptedException {
     ObjectMapper mapper = new ObjectMapper();
     ArrayNode node = mapper.createArrayNode();
-    String cmd = "easyocr -l ja en --output_format json --verbose '' -f ";
+    String cmd = "easyocr -l ja en --canvas_size 2560 --output_format json --verbose '' -f ";
     ProcessBuilder pb = new ProcessBuilder((cmd + imagePath).split(" "));
     Process ps = pb.start();
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getInputStream()));

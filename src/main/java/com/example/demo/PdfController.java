@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,17 +26,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class PdfController {
   public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
-  private List<String> ls(String dir, String ext) throws IOException {
+  private Set<String> ls(String dir, String ext) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
       return stream
-          .filter(path -> path.endsWith(ext))
+          .filter(file -> !Files.isDirectory(file))
           .map(Path::getFileName)
           .map(Path::toString)
-          .collect(Collectors.toList());
+          .filter(path -> path.endsWith(ext))
+          .collect(Collectors.toSet());
     }
   }
 
-  private List<String> lsPdf(String dir) throws IOException {
+  private Set<String> lsPdf(String dir) throws IOException {
     return ls(dir, ".pdf");
   }
 
@@ -78,10 +79,10 @@ public class PdfController {
    */
   @GetMapping("files")
   public String getFiles(Model model) throws IOException {
-    List<String> filelist =
+    Set<String> filelist =
         lsPdf(UPLOAD_DIRECTORY).stream()
             .map(StringUtils::stripFilenameExtension)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     model.addAttribute("filelist", filelist);
     return "pdf/files";
   }

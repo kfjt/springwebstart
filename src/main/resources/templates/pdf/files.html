@@ -9,7 +9,10 @@
 <body>
   <ul>
     <li th:each="id : ${filelist}">
-      <a th:href="@{/pdf/ui/{id}(id=${id})}" th:text="|${id}.pdf|">id</a>
+      <p th:text="|${id}.pdf|"></p>
+      <a th:href="@{/pdf/ui/{id}(id=${id})}">pdf editor</a>
+      <a th:href="@{/api/pdf2img/{id}(id=${id})}">backend pdf2img</a>
+      <a th:href="@{/api/aiocr/{id}(id=${id})}">backend ocr</a>
     </li>
   </ul>
 </body>
