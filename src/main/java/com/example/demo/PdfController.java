@@ -24,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("pdf")
 public class PdfController {
-  public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
-
   private Set<String> ls(String dir, String ext) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
       return stream
@@ -63,7 +61,7 @@ public class PdfController {
   public String postOcr(Model model, @RequestParam("pdfFile") MultipartFile file)
       throws IOException {
     String id = UUID.randomUUID().toString();
-    Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, id + ".pdf");
+    Path fileNameAndPath = Paths.get(DemoApplication.UPLOAD_DIRECTORY, id + ".pdf");
     Files.write(fileNameAndPath, file.getBytes());
 
     model.addAttribute("id", id);
@@ -80,7 +78,7 @@ public class PdfController {
   @GetMapping("files")
   public String getFiles(Model model) throws IOException {
     Set<String> filelist =
-        lsPdf(UPLOAD_DIRECTORY).stream()
+        lsPdf(DemoApplication.UPLOAD_DIRECTORY).stream()
             .map(StringUtils::stripFilenameExtension)
             .collect(Collectors.toSet());
     model.addAttribute("filelist", filelist);
@@ -143,7 +141,7 @@ public class PdfController {
    * @throws IOException Files.readAllBytes
    */
   private String readPdfDataUri(String id) throws IOException {
-    Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, id + ".pdf");
+    Path fileNameAndPath = Paths.get(DemoApplication.UPLOAD_DIRECTORY, id + ".pdf");
     String base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(fileNameAndPath));
     return "data:application/pdf;base64," + base64;
   }

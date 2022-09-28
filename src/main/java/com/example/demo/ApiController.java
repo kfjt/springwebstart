@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 /** AI OCR Contoroller. */
 @RestController
 @RequestMapping("api")
-public class AiocrController {
-  public static final String CONVERT_DIRECTORY = System.getProperty("user.dir") + "/converts";
-
+public class ApiController {
   private Set<String> ls(String dir, String id) throws IOException {
     try (Stream<Path> stream = Files.list(Paths.get(dir))) {
       return stream
@@ -80,7 +78,7 @@ public class AiocrController {
    */
   @GetMapping("aiocr/{id}")
   public String aiocr(@PathVariable("id") String id) throws IOException, InterruptedException {
-    String imagePath = Paths.get(CONVERT_DIRECTORY, id + "-1.png").toString();
+    String imagePath = Paths.get(DemoApplication.CONVERT_DIRECTORY, id + "-1.png").toString();
     // return ocrTextFrom(imagePath);
     ArrayNode node = ocrFrom(imagePath);
     ObjectMapper mapper = new ObjectMapper();
@@ -96,14 +94,15 @@ public class AiocrController {
    */
   @GetMapping("pdf2img/{id}")
   public String pdf2img(@PathVariable("id") String id) throws IOException, InterruptedException {
-    String pdffile = Paths.get(PdfController.UPLOAD_DIRECTORY, id + ".pdf").toString();
+    String pdffile = Paths.get(DemoApplication.UPLOAD_DIRECTORY, id + ".pdf").toString();
 
     ProcessBuilder pb =
-        new ProcessBuilder("pdftoppm", "-png", pdffile, CONVERT_DIRECTORY + "/" + id);
+        new ProcessBuilder(
+            "pdftoppm", "-png", pdffile, DemoApplication.CONVERT_DIRECTORY + "/" + id);
     Process ps = pb.start();
     ps.waitFor();
     ps.destroy();
 
-    return ls(CONVERT_DIRECTORY, id).toString();
+    return ls(DemoApplication.CONVERT_DIRECTORY, id).toString();
   }
 }
