@@ -2,7 +2,9 @@ package com.example.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.imageio.ImageIO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,5 +107,25 @@ public class ApiController {
     ps.destroy();
 
     return ls(DemoApplication.CONVERT_DIRECTORY, id).toString();
+  }
+
+  /**
+   * GET /api/subimage/{id}.
+   *
+   * @return dummy
+   * @throws IOException ImageIO.read | ImageIO.write
+   */
+  @GetMapping("subimage/{id}")
+  public String subimage(@PathVariable("id") String id) throws IOException {
+    File pngfile = Paths.get(DemoApplication.CONVERT_DIRECTORY, id + "-1.png").toFile();
+    int x = 10;
+    int y = 20;
+    int w = 130;
+    int h = 140;
+    BufferedImage subimage = ImageIO.read(pngfile).getSubimage(x, y, w, h);
+    String subfilename = id + "." + x + "." + y + "." + w + "." + h + ".png";
+    File subfile = Paths.get(DemoApplication.SUBIMAGE_DIRECTORY, subfilename).toFile();
+    ImageIO.write(subimage, "png", subfile);
+    return subfilename;
   }
 }

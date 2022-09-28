@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
   public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
   public static final String CONVERT_DIRECTORY = System.getProperty("user.dir") + "/converts";
+  public static final String SUBIMAGE_DIRECTORY = System.getProperty("user.dir") + "/subimage";
 
   private static void mkdir(String dir) throws IOException {
     Path path = Paths.get(dir);
@@ -22,7 +23,7 @@ public class DemoApplication {
   }
 
   public static void main(String[] args) throws IOException {
-    for (String dir : Arrays.asList(UPLOAD_DIRECTORY, CONVERT_DIRECTORY)) {
+    for (String dir : Arrays.asList(UPLOAD_DIRECTORY, CONVERT_DIRECTORY, SUBIMAGE_DIRECTORY)) {
       mkdir(dir);
     }
     SpringApplication.run(DemoApplication.class, args);

@@ -254,5 +254,6 @@ gradle-app.setting
 
 bin/
 src/main/resources/static/js/**/*.bundle.js
-uploads/*.pdf
-converts/*.png
+uploads/
+converts/
+subimage/
