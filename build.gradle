@@ -45,6 +45,7 @@ task yarnTest(type:YarnTask) {args = ['test']}
 task yarnAddProduction(type:YarnTask) {
 	args = [
 		'add',
+		'@pdfme/generator',
 		'@pdfme/ui',
 	]
 }
@@ -56,7 +57,7 @@ task yarnAddDevelop(type:YarnTask) {
 		'webpack',
 		'webpack-cli',
 		'jest',
-		'jest-environment-jsdom'
+		'jest-environment-jsdom',
 	]
 }
 

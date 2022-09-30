@@ -5,16 +5,37 @@
   <title>ui</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <script defer th:src="@{/js/index.bundle.js}"></script>
+  <script defer th:src="@{/js/font.bundle.js}"></script>
   <script type="module" th:inline="javascript">
+    // options
+    const options = { font: await font }
+    // pdf Container
     const template = /*[[${template}]]*/{};
-    const inputs = /*[[${inputs}]]*/[];
     const domContainer = document.getElementById('pdfContainer');
-    new Form({ template, inputs, domContainer });
+    const designer = new Designer({ domContainer, template, options });
+    // download button
+    const genelateButton = document.getElementById('genelate');
+    const downloadAnchor = document.getElementById('download');
+    genelateButton.addEventListener("click", event => {
+      const template = designer.getTemplate();
+      const inputs = template.sampledata;
+      generate({ template, inputs, options }).then((pdf) => {
+        const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          downloadAnchor.href = reader.result;
+          downloadAnchor.click()
+        }
+      });
+    });
   </script>
 </head>
 
 <body>
   hello!
+  <button id="genelate">genelate pdf</button>
+  <a href="" download="" id="download"></a>
   <div id="pdfContainer"></div>
 </body>
 

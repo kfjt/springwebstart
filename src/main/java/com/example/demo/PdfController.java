@@ -35,6 +35,37 @@ public class PdfController {
     }
   }
 
+  private A4TemplateRoot.Field fieldText(int x, int y, int width, int height) {
+    A4TemplateRoot.Position position = new A4TemplateRoot.Position();
+    position.setX(x);
+    position.setY(y);
+    A4TemplateRoot.Field field = new A4TemplateRoot.Field();
+    field.setType("text");
+    field.setPosition(position);
+    field.setWidth(width);
+    field.setHeight(height);
+    return field;
+  }
+
+  private A4TemplateRoot.Schema schmaTypeA() {
+    A4TemplateRoot.Field fieldA = fieldText(0, 0, 30, 40);
+    A4TemplateRoot.Field fieldB = fieldText(50, 50, 30, 40);
+    A4TemplateRoot.Field fieldC = fieldText(100, 100, 30, 40);
+    A4TemplateRoot.Schema schema = new A4TemplateRoot.Schema();
+    schema.setA(fieldA);
+    schema.setB(fieldB);
+    schema.setC(fieldC);
+    return schema;
+  }
+
+  private A4TemplateSampledata sampledataTypeA(String a, String b, String c) {
+    A4TemplateSampledata input = new A4TemplateSampledata();
+    input.setA(a);
+    input.setB(b);
+    input.setC(c);
+    return input;
+  }
+
   private Set<String> lsPdf(String dir) throws IOException {
     return ls(dir, ".pdf");
   }
@@ -93,43 +124,12 @@ public class PdfController {
    */
   @GetMapping("ui/{id}")
   public String getUi(Model model, @PathVariable("id") String id) throws IOException {
-    A4TemplateRoot.Position positionA = new A4TemplateRoot.Position();
-    positionA.setX(0);
-    positionA.setY(0);
-    A4TemplateRoot.Field fieldA = new A4TemplateRoot.Field();
-    fieldA.setType("text");
-    fieldA.setPosition(positionA);
-    fieldA.setWidth(30);
-    fieldA.setHeight(40);
-    A4TemplateRoot.Position positionB = new A4TemplateRoot.Position();
-    positionB.setX(50);
-    positionB.setY(50);
-    A4TemplateRoot.Field fieldB = new A4TemplateRoot.Field();
-    fieldB.setType("text");
-    fieldB.setPosition(positionB);
-    fieldB.setWidth(30);
-    fieldB.setHeight(40);
-    A4TemplateRoot.Position positionC = new A4TemplateRoot.Position();
-    positionC.setX(100);
-    positionC.setY(100);
-    A4TemplateRoot.Field fieldC = new A4TemplateRoot.Field();
-    fieldC.setType("text");
-    fieldC.setPosition(positionC);
-    fieldC.setWidth(30);
-    fieldC.setHeight(40);
-    A4TemplateRoot.Schema schema = new A4TemplateRoot.Schema();
-    schema.setA(fieldA);
-    schema.setB(fieldB);
-    schema.setC(fieldC);
     A4TemplateRoot template = new A4TemplateRoot();
-    template.setSchemas(Arrays.asList(schema));
+    template.setSchemas(Arrays.asList(schmaTypeA()));
     template.setBasePdf(readPdfDataUri(id));
+    A4TemplateSampledata sampledata = sampledataTypeA("a1", "b10\nb20", "c1");
+    template.setSampledata(Arrays.asList(sampledata));
     model.addAttribute("template", template);
-    A4TemplateInput input = new A4TemplateInput();
-    input.setA("a1");
-    input.setB("b10\nb20");
-    input.setC("c1");
-    model.addAttribute("inputs", Arrays.asList(input));
     return "pdf/ui";
   }
 
