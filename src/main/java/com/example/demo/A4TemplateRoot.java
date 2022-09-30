@@ -2,6 +2,8 @@ package com.example.demo;
 
 import java.util.List;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /** A4 Template. */
 @Data
@@ -13,18 +15,27 @@ public class A4TemplateRoot {
   /** A4 Schema. */
   @Data
   public static class Schema {
-    private Field a;
-    private Field b;
-    private Field c;
+    private TextSchema a;
+    private TextSchema b;
+    private TextSchema c;
   }
 
-  /** A4 Field. */
+  /** CommonSchema. */
   @Data
-  public static class Field {
+  public static class CommonSchema {
     private String type;
     private Position position;
     private Integer width;
     private Integer height;
+  }
+
+  /** TextSchema. */
+  @Data
+  @EqualsAndHashCode(callSuper = true)
+  @ToString(callSuper = true)
+  public static class TextSchema extends CommonSchema {
+    private String type = "text";
+    private String backgroundColor;
   }
 
   /** A4 Position. */

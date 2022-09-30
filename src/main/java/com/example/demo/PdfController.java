@@ -35,22 +35,22 @@ public class PdfController {
     }
   }
 
-  private A4TemplateRoot.Field fieldText(int x, int y, int width, int height) {
+  private A4TemplateRoot.TextSchema fieldText(int x, int y, int width, int height) {
     A4TemplateRoot.Position position = new A4TemplateRoot.Position();
     position.setX(x);
     position.setY(y);
-    A4TemplateRoot.Field field = new A4TemplateRoot.Field();
-    field.setType("text");
+    A4TemplateRoot.TextSchema field = new A4TemplateRoot.TextSchema();
     field.setPosition(position);
     field.setWidth(width);
     field.setHeight(height);
+    field.setBackgroundColor("#ffffff");
     return field;
   }
 
   private A4TemplateRoot.Schema schmaTypeA() {
-    A4TemplateRoot.Field fieldA = fieldText(0, 0, 30, 40);
-    A4TemplateRoot.Field fieldB = fieldText(50, 50, 30, 40);
-    A4TemplateRoot.Field fieldC = fieldText(100, 100, 30, 40);
+    A4TemplateRoot.TextSchema fieldA = fieldText(0, 0, 30, 40);
+    A4TemplateRoot.TextSchema fieldB = fieldText(50, 50, 30, 40);
+    A4TemplateRoot.TextSchema fieldC = fieldText(100, 100, 30, 40);
     A4TemplateRoot.Schema schema = new A4TemplateRoot.Schema();
     schema.setA(fieldA);
     schema.setB(fieldB);
