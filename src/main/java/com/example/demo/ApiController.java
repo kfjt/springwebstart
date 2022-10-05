@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api")
 public class ApiController {
-  private Set<String> ls(String dir, String id) throws IOException {
-    try (Stream<Path> stream = Files.list(Paths.get(dir))) {
+  private Set<String> ls(Path convertDirectory, String id) throws IOException {
+    try (Stream<Path> stream = Files.list(convertDirectory)) {
       return stream
           .filter(file -> !Files.isDirectory(file))
           .map(Path::getFileName)
@@ -81,8 +81,8 @@ public class ApiController {
    */
   @GetMapping("aiocr/{id}")
   public String aiocr(@PathVariable("id") String id) throws IOException, InterruptedException {
-    String imagePath = Paths.get(DemoApplication.CONVERT_DIRECTORY, id + "-1.png").toString();
-    // return ocrTextFrom(imagePath);
+    String imagePath =
+        DemoApplication.CONVERT_DIRECTORY.resolve(Paths.get(id + "-1.png")).toString();
     ArrayNode node = ocrFrom(imagePath);
     ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(node);
@@ -97,7 +97,7 @@ public class ApiController {
    */
   @GetMapping("pdf2img/{id}")
   public String pdf2img(@PathVariable("id") String id) throws IOException, InterruptedException {
-    String pdffile = Paths.get(DemoApplication.UPLOAD_DIRECTORY, id + ".pdf").toString();
+    String pdffile = DemoApplication.UPLOAD_DIRECTORY.resolve(Paths.get(id + ".pdf")).toString();
 
     ProcessBuilder pb =
         new ProcessBuilder(
@@ -117,14 +117,14 @@ public class ApiController {
    */
   @GetMapping("subimage/{id}")
   public String subimage(@PathVariable("id") String id) throws IOException {
-    File pngfile = Paths.get(DemoApplication.CONVERT_DIRECTORY, id + "-1.png").toFile();
+    File pngfile = DemoApplication.CONVERT_DIRECTORY.resolve(Paths.get(id + "-1.png")).toFile();
     int x = 10;
     int y = 20;
     int w = 130;
     int h = 140;
     BufferedImage subimage = ImageIO.read(pngfile).getSubimage(x, y, w, h);
     String subfilename = id + "." + x + "." + y + "." + w + "." + h + ".png";
-    File subfile = Paths.get(DemoApplication.SUBIMAGE_DIRECTORY, subfilename).toFile();
+    File subfile = DemoApplication.SUBIMAGE_DIRECTORY.resolve(Paths.get(subfilename)).toFile();
     ImageIO.write(subimage, "png", subfile);
     return subfilename;
   }
