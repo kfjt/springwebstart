@@ -19,7 +19,7 @@ RUN curl -L -o google-java-format-all-deps.jar https://github.com/google/google-
     -jar google-java-format-all-deps.jar google-java-format
 
 
-FROM openjdk:17-slim-bullseye
+FROM eclipse-temurin:17-jdk-jammy
 ENV EASYOCR_MODULE_PATH=/home/appuser/.EasyOCR
 
 COPY --from=google-java-format /app/google-java-format /usr/local/bin/google-java-format
